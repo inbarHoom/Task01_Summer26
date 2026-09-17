@@ -1871,7 +1871,7 @@ GameObject:
   - component: {fileID: 1041866971}
   - component: {fileID: 1041866970}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: WeakEnemy
   m_TagString: Enemies
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1982,8 +1982,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e4a3aee4dc274348934529fdb540119, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  playerReferance: {fileID: 0}
-  moveSpeed: 0.5
+  playerReferance: {fileID: 392563568}
+  enemyData: {fileID: 11400000, guid: b09d7f1a6271ec64684da6a8282903f5, type: 2}
 --- !u!114 &1041866971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1996,7 +1996,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d5ce36065b17734eb693eb318d9a223, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  damage: 5
+  enemyData: {fileID: 11400000, guid: b09d7f1a6271ec64684da6a8282903f5, type: 2}
 --- !u!1 &1056404743
 GameObject:
   m_ObjectHideFlags: 0

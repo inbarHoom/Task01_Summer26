@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Enemy_Combat : MonoBehaviour
 {
-    [SerializeField] private int damage = 5;
+    [SerializeField] private EnemyData enemyData;
     public static event Action<int> OnHit;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,7 +21,7 @@ public class Enemy_Combat : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            OnHit.Invoke(damage);
+            OnHit.Invoke(enemyData.Damage);
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 public class Enemy_Movement : MonoBehaviour
 {
     [SerializeField] private GameObject playerReferance;
-    [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private EnemyData enemyData;
     private Vector3 direction;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -15,7 +15,7 @@ public class Enemy_Movement : MonoBehaviour
     void Update()
     {
         direction = playerReferance.transform.position - transform.position;
-        transform.position += direction.normalized * moveSpeed * Time.deltaTime;
+        transform.position += direction.normalized * enemyData.Speed * Time.deltaTime;
     }
     
 }
