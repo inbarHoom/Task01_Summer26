@@ -30,7 +30,7 @@ public class Weapon_Behavior : MonoBehaviour
     protected virtual void Shoot()
     {
        if (!canFire()) return; 
-       GameObject bulletObject = Instantiate(loadedAmmo.BulletPrefab, muzzlePoint.transform.position, muzzlePoint.transform.rotation);
+       GameObject bulletObject = Pool_Manager.Instance.Spawn(loadedAmmo.BulletPrefab, muzzlePoint.transform.position, muzzlePoint.transform.rotation);
        Bullet_Controller bullet = bulletObject.GetComponent<Bullet_Controller>();
        bullet.Initialize(loadedAmmo);
        loadedBullets--;

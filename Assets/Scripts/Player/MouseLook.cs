@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,9 @@ public class MouseLook : MonoBehaviour
     private float rotationX;
     private float rotationY;
 
+    public static bool lockedScreen = false;
+    [SerializeField] private TextMeshProUGUI startText;
+
     void Start()
     {
         rotationX = transform.eulerAngles.x;
@@ -16,8 +20,8 @@ public class MouseLook : MonoBehaviour
 
         rotationY = player.eulerAngles.y;
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     void Update()
@@ -26,7 +30,9 @@ public class MouseLook : MonoBehaviour
             Keyboard.current.escapeKey.wasPressedThisFrame )
         {
             Cursor.lockState = CursorLockMode.None;
+            lockedScreen = false;
             Cursor.visible = true;
+            startText.enabled = true;
         }
 
         if (Mouse.current == null)
@@ -37,7 +43,9 @@ public class MouseLook : MonoBehaviour
             if (Mouse.current.leftButton.wasPressedThisFrame)
             {
                 Cursor.lockState = CursorLockMode.Locked;
+                lockedScreen = true;
                 Cursor.visible = false;
+                startText.enabled = false;
             }
 
             return;

@@ -17,9 +17,9 @@ public class Combat : MonoBehaviour
         if(currentWeapon == null) return;
         if(Keyboard.current.rKey.wasPressedThisFrame)
             currentWeapon.TryReload();
-        else if(Keyboard.current.spaceKey.isPressed)
+        else if(Mouse.current.leftButton.isPressed)
             currentWeapon.TryShoot();
-        else if(Keyboard.current.spaceKey.wasReleasedThisFrame)
+        else if(Mouse.current.leftButton.wasReleasedThisFrame)
             currentWeapon.TryReleaseTrigger();
         else if(Keyboard.current.fKey.wasPressedThisFrame)
             currentWeapon.TryUniqueAction();
