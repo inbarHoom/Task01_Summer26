@@ -3,6 +3,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
+using System.Collections;
 
 public class HUD_Manager : MonoBehaviour
 {
@@ -11,7 +13,8 @@ public class HUD_Manager : MonoBehaviour
     [SerializeField] protected TextMeshProUGUI fireMode;
     [SerializeField] private GameObject inventoryGO;
     [SerializeField] private TextMeshProUGUI instructions;
-
+    [SerializeField] private Image hurtImage;
+    [SerializeField]private float hurtDuration = 0.5f;
     private WeaponSO currentWeapon;
    [SerializeField] private Inventory inventory;
     string startInstructions = "Hold 'i' to see the instructions";
@@ -26,19 +29,22 @@ public class HUD_Manager : MonoBehaviour
     {
         ammoCounter.SetActive(false);
         instructions.text = startInstructions;
-        inventoryGO.SetActive(false);
+        inventoryGO.SetActive(false); 
+        hurtImage.enabled = false;
     }
 
     private void OnEnable()
     {
         Weapon_Behavior.ShowBullets += ShowAmmoCounter;
         Inventory.OnEquipped += setCurrentWeapon;
+        Combat.OnPlayerTakeDamage +=  HurtPlayer; 
     }
 
     private void OnDisable()
     {
         Weapon_Behavior.ShowBullets -= ShowAmmoCounter;
         Inventory.OnEquipped -= setCurrentWeapon;
+        Combat.OnPlayerTakeDamage -=  HurtPlayer; 
     }
 
     void Update()
@@ -141,5 +147,19 @@ public class HUD_Manager : MonoBehaviour
     {
         currentWeapon = current.WeaponData;
         ShowAmmoCounter(current.LoadedBullets);
+    }
+
+    private void HurtPlayer()
+    {
+        StopAllCoroutines();
+        StartCoroutine(HurtFlash());
+    }
+    private IEnumerator HurtFlash()
+    {
+        hurtImage.enabled = true;
+
+        yield return new WaitForSeconds(hurtDuration);
+
+        hurtImage.enabled = false;
     }
 }
