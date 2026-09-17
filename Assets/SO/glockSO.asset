@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b14143ab794309d4dbbf08e38ee43e78, type: 3}
+  m_Name: glockSO
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponSO
+  weaponName: 2
+  ammoOptions:
+  - {fileID: 11400000, guid: 66d7baf7470d7c747bf3583b6966bd6b, type: 2}
+  - {fileID: 11400000, guid: 0c6b00ffdfc6d39418933e20fff8984d, type: 2}
+  capacity: 15
+  icon: {fileID: 21300000, guid: 1512bfa13901bc74b8611ce9cb261022, type: 3}
+  weaponPrefab: {fileID: 4140507827442690521, guid: a49d0f72025ac40418cd35b97763913c, type: 3}

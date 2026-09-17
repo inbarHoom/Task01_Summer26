@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5d1e0ad0f1fa33418c37fc41627f17e, type: 3}
+  m_Name: Hollow_Point
+  m_EditorClassIdentifier: Assembly-CSharp::AmmoSO
+  caliberName: Hollow Point
+  damage: 20
+  bulletSpeed: 15
+  bulletLifeTime: 3
+  bulletPrefab: {fileID: 6508978046272375730, guid: d96a9e4d373f32c469a48c801202349a, type: 3}
