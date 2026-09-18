@@ -8,6 +8,8 @@ public class Bullet_Controller : MonoBehaviour
     private float lifetime;
     private int damage;
     private bool hasReturned = false;
+    
+    public static event Action<int> OnBulletHit;
     public void Initialize(AmmoSO ammoData)
     {
         prefab = ammoData.BulletPrefab;
@@ -34,7 +36,7 @@ public class Bullet_Controller : MonoBehaviour
         if(hasReturned) return;
          if (other.tag == "Enemies")
          {
-             other.gameObject.GetComponent<Enemy_HealthTest>().TakeDamage(damage);
+             other.gameObject.GetComponent<Enemy_Combat>().TakeDamage(damage);
          }
         // Pool_Manager.Instance.ReturnObject(prefab ,gameObject);
         ReturnBullet();

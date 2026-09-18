@@ -14,6 +14,11 @@ public Weapon_Behavior equipedWeapon { get; private set; }
    public void EquipWeapon(int hoveredSlotIndex)
     {
         WeaponSO selectedWeapon = weapons[hoveredSlotIndex];
+        if (equipedWeapon != null &&
+            equipedWeapon.WeaponData == selectedWeapon)
+        {
+            return;
+        }
         if (selectedWeapon is not WeaponSO weaponSo) return;
 
         if (equippedWeaponObject != null)

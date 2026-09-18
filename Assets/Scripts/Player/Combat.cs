@@ -5,9 +5,10 @@ public class Combat : MonoBehaviour
 {
     [SerializeField] private Inventory inventory;
     private Weapon_Behavior currentWeapon;
-    private int health = 100;
+  [SerializeField]  private int health = 100;
     
     public static event Action OnPlayerTakeDamage;
+    public static event Action OnDeath;
 
     private void OnEnable()
     {
@@ -26,8 +27,6 @@ public class Combat : MonoBehaviour
 
     void Update()
     {
-        if(Keyboard.current.spaceKey.isPressed) 
-            PlayerTakeDamage(5);
         setWeapon();
         if(currentWeapon == null) return;
         if(Keyboard.current.rKey.wasPressedThisFrame)
@@ -42,7 +41,11 @@ public class Combat : MonoBehaviour
     public void PlayerTakeDamage(int amount)
     {
         health -= amount;
-       //if(health <= 0) Time.timeScale = 0;
+       if(health <= 0)
+       {
+           Time.timeScale = 0;
+           OnDeath.Invoke();
+       }
         OnPlayerTakeDamage.Invoke();
     }
 }

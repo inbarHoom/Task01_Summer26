@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Movement : MonoBehaviour
 {
-    float x , z  , speed = 5f;
+    float x , z  , speed = 10f;
     
     void Update()
     {
@@ -17,6 +17,8 @@ public class Movement : MonoBehaviour
 
     void GetDirection()
     {
+        x = 0;
+        z = 0;
         if (Keyboard.current.wKey.isPressed)
         {
             z = 1f;
@@ -36,12 +38,6 @@ public class Movement : MonoBehaviour
         {
             z = 0;
             x = 1f;
-        }
-
-        if (!Keyboard.current.anyKey.isPressed)
-        {
-            z = 0f;
-            x = 0f;
         }
         Move(x,z);
     }

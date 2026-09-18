@@ -63,9 +63,4 @@ public class Pool_Manager : MonoBehaviour
             ReturnObject(prefab,Instantiate(prefab));
         }
     }
-
-void Update()
-    {
-        
-    }
 }
