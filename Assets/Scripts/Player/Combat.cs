@@ -48,4 +48,24 @@ public class Combat : MonoBehaviour
        }
         OnPlayerTakeDamage.Invoke();
     }
+
+    public void ReloadFromUI()
+    {
+        if(currentWeapon == null) return;
+        currentWeapon.TryReload();
+    }
+
+    public void FireFromUI()
+    {
+        if(currentWeapon == null) return;
+        currentWeapon.TryShoot();
+        
+    }
+
+    public void UniqueActionFromUI()
+    {
+        if(currentWeapon == null) return;
+        currentWeapon.TryUniqueAction();
+
+    }
 }

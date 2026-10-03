@@ -4,10 +4,19 @@ using UnityEngine.InputSystem;
 public class Movement : MonoBehaviour
 {
     float x , z  , speed = 10f;
-    
+
     void Update()
     {
-        GetDirection();
+        if (PlatformUI.UseMobileControls)
+        {
+            x = MobileJoystick.Direction.x;
+            z = MobileJoystick.Direction.y;
+            Move(x, z);
+        }
+        else
+        {
+            GetDirection();
+        }
     }
 
     public void Move(float x , float z)

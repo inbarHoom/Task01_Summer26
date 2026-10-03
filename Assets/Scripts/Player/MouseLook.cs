@@ -26,6 +26,7 @@ public class MouseLook : MonoBehaviour
 
     void Update()
     {
+        if(PlatformUI.UseMobileControls) return;
         if (Keyboard.current != null &&
             Keyboard.current.escapeKey.wasPressedThisFrame )
         {

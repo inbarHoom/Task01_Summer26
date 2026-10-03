@@ -120,8 +120,11 @@ public class HUD_Manager : MonoBehaviour
         {
             hoveredSlotIndex = -1;
             inventoryGO.SetActive(true);
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
+          if (!PlatformUI.UseMobileControls)
+          {
+              Cursor.lockState = CursorLockMode.Locked;
+              Cursor.visible = false;
+          }
         }
 
         if(Keyboard.current.tabKey.wasReleasedThisFrame)
@@ -133,8 +136,11 @@ public class HUD_Manager : MonoBehaviour
                 
             }
             inventoryGO.SetActive(false);
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+         if (!PlatformUI.UseMobileControls)
+         {
+             Cursor.lockState = CursorLockMode.Locked;
+             Cursor.visible = false;
+         }
         }
     }
 
