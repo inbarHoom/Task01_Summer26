@@ -12,6 +12,10 @@ public class MouseLook : MonoBehaviour
     public static bool lockedScreen = false;
     [SerializeField] private TextMeshProUGUI startText;
 
+    [Header("Mobile")] 
+    [SerializeField] private MobileJoystick viewJoystick;
+[SerializeField] private float mobileCameraSpeed = 10f;
+    
     void Start()
     {
         rotationX = transform.eulerAngles.x;
@@ -26,7 +30,11 @@ public class MouseLook : MonoBehaviour
 
     void Update()
     {
-        if(PlatformUI.UseMobileControls) return;
+        if(PlatformUI.UseMobileControls)
+        {
+            MobileLook();
+            return;
+        }
         if (Keyboard.current != null &&
             Keyboard.current.escapeKey.wasPressedThisFrame )
         {
@@ -56,6 +64,17 @@ public class MouseLook : MonoBehaviour
 
         rotationY += mouseMovement.x * sensitivity;
         rotationX -= mouseMovement.y * sensitivity;
+        rotationX = Mathf.Clamp(rotationX, -85f, 85f);
+
+        player.rotation = Quaternion.Euler(0f, rotationY, 0f);
+        transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
+    }
+
+    private void MobileLook()
+    {
+        Vector2 joystickMovement = viewJoystick.Direction;
+        rotationY += joystickMovement.x * mobileCameraSpeed * Time.deltaTime;
+        rotationX -= joystickMovement.y * mobileCameraSpeed * Time.deltaTime;
         rotationX = Mathf.Clamp(rotationX, -85f, 85f);
 
         player.rotation = Quaternion.Euler(0f, rotationY, 0f);

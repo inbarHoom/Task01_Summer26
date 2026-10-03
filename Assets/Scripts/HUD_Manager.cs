@@ -19,6 +19,7 @@ public class HUD_Manager : MonoBehaviour
     [Header("Inventory")]
     [SerializeField] private GameObject inventoryGO;
     [SerializeField] private Inventory inventory;
+    [SerializeField] private GameObject mobileInventoryGO;
     private WeaponSO currentWeapon;
     private int hoveredSlotIndex = -1;
     
@@ -50,6 +51,7 @@ public class HUD_Manager : MonoBehaviour
         hurtImage.enabled = false;
         deathScreen.enabled = false;
         finishText.enabled = false;
+        mobileInventoryGO.SetActive(false);
     }
 
     private void OnEnable()
@@ -85,6 +87,7 @@ public class HUD_Manager : MonoBehaviour
 
     void ShowInstructions()
     {
+        if(PlatformUI.UseMobileControls) return;
         if(Keyboard.current.iKey.wasPressedThisFrame)
         {
             if (currentWeapon == null)
@@ -116,6 +119,11 @@ public class HUD_Manager : MonoBehaviour
 
     void ShowInventory()
     {
+        if (PlatformUI.UseMobileControls)
+        {
+           // Time.timeScale = 0;
+           // mobileInventoryGO.SetActive(true);
+        }
         if (Keyboard.current.tabKey.wasPressedThisFrame)
         {
             hoveredSlotIndex = -1;

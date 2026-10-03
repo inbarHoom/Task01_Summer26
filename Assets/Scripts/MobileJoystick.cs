@@ -7,7 +7,7 @@ public class MobileJoystick : MonoBehaviour, IDragHandler ,IPointerDownHandler ,
     [SerializeField] private RectTransform joystickBase;
     [SerializeField] private RectTransform joystickHandle;
     [SerializeField] private float radius = 60f;
-    public static Vector2 Direction { get; private set; }
+    public  Vector2 Direction { get; private set; }
     public void OnDrag(PointerEventData eventData)
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(joystickBase, eventData.position, eventData.pressEventCamera, out Vector2 localPoint);
