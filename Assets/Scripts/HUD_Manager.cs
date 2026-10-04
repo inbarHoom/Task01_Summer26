@@ -123,6 +123,7 @@ public class HUD_Manager : MonoBehaviour
         {
            // Time.timeScale = 0;
            // mobileInventoryGO.SetActive(true);
+           return;
         }
         if (Keyboard.current.tabKey.wasPressedThisFrame)
         {

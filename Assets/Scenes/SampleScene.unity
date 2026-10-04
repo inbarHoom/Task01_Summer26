@@ -3187,7 +3187,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlatformUI
   mobileControls: {fileID: 486408835}
-  isMobile: 1
+  isMobile: 0
 --- !u!1 &1768431667
 GameObject:
   m_ObjectHideFlags: 0
