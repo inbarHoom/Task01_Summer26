@@ -19,7 +19,6 @@ public class HUD_Manager : MonoBehaviour
     [Header("Inventory")]
     [SerializeField] private GameObject inventoryGO;
     [SerializeField] private Inventory inventory;
-    [SerializeField] private GameObject mobileInventoryGO;
     private WeaponSO currentWeapon;
     private int hoveredSlotIndex = -1;
     
@@ -38,10 +37,18 @@ public class HUD_Manager : MonoBehaviour
     
     [Header("Waves")]
     [SerializeField] private List<Sprite> waves = new();
-   [SerializeField] private Image waveIndicator;
-   [SerializeField] private TextMeshProUGUI finishText;
+    [SerializeField] private Image waveIndicator;
+    [SerializeField] private TextMeshProUGUI finishText;
+   
+    [Header("Mobile")]
+    [SerializeField] private Image mobileInventory;
 
-    
+    [SerializeField] private TextMeshProUGUI weaponName;
+    [SerializeField] private List<GameObject> weaponsPrefabsInv = new List<GameObject>(3);
+    [SerializeField] private Button uniqueActionButton;
+    [SerializeField] private Sprite m16UniqueAction;
+    [SerializeField] private Sprite glockUniqueAction;
+    [SerializeField] private Sprite revolverUniqueAction;
 
     void Start()
     {
@@ -51,7 +58,12 @@ public class HUD_Manager : MonoBehaviour
         hurtImage.enabled = false;
         deathScreen.enabled = false;
         finishText.enabled = false;
-        mobileInventoryGO.SetActive(false);
+        mobileInventory.gameObject.SetActive(false);
+        foreach (GameObject weapon in weaponsPrefabsInv)
+        {
+            weapon.SetActive(false);
+        }
+        
     }
 
     private void OnEnable()
@@ -78,6 +90,7 @@ public class HUD_Manager : MonoBehaviour
     {
         ShowInstructions();
         ShowInventory();
+        ShowUniqueActionButton();
     }
 
     private void LateUpdate()
@@ -87,7 +100,11 @@ public class HUD_Manager : MonoBehaviour
 
     void ShowInstructions()
     {
-        if(PlatformUI.UseMobileControls) return;
+        if(PlatformUI.UseMobileControls)
+        {
+            instructions.enabled = false;
+            return;
+        }
         if(Keyboard.current.iKey.wasPressedThisFrame)
         {
             if (currentWeapon == null)
@@ -119,12 +136,14 @@ public class HUD_Manager : MonoBehaviour
 
     void ShowInventory()
     {
+        /*
         if (PlatformUI.UseMobileControls)
         {
            // Time.timeScale = 0;
            // mobileInventoryGO.SetActive(true);
            return;
         }
+        */
         if (Keyboard.current.tabKey.wasPressedThisFrame)
         {
             hoveredSlotIndex = -1;
@@ -182,6 +201,37 @@ public class HUD_Manager : MonoBehaviour
                fireMode.text = $"Next mag: {glock.SelectedCaliberName}";
                 break;
         }
+    }
+
+    public void ShowUniqueActionButton()
+    {
+        if(!PlatformUI.UseMobileControls) return;
+        if(currentWeapon ==  null)
+        {
+            uniqueActionButton.gameObject.SetActive(false);
+            return;
+        }
+        uniqueActionButton.gameObject.SetActive(true);
+        switch (currentWeapon.WeaponName)
+        {
+            case e_WeaponName.M16:
+                uniqueActionButton.image.sprite = m16UniqueAction;
+                break;
+            case e_WeaponName.Glock:
+                uniqueActionButton.image.sprite =  glockUniqueAction;
+                break;
+            case e_WeaponName.Revolver:
+                uniqueActionButton.image.sprite = revolverUniqueAction;
+                break;
+        }
+    }
+
+    public void ShowMobileInv()
+    {
+        mobileInventory.gameObject.SetActive(true);
+        weaponName.text = inventory.Weapons[0].WeaponName.ToString();
+        weaponsPrefabsInv[0].gameObject.SetActive(true);
+        
     }
 
     private void setCurrentWeapon(Weapon_Behavior current)

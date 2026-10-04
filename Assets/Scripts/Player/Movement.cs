@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 
 public class Movement : MonoBehaviour
 {
-    float x , z  , speed = 10f;
+    float x , z  , speed = 20f;
     [SerializeField] private MobileJoystick movementJoystick;
     void Update()
     {

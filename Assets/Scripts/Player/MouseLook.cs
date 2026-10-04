@@ -32,6 +32,7 @@ public class MouseLook : MonoBehaviour
     {
         if(PlatformUI.UseMobileControls)
         {
+            startText.enabled = false;
             MobileLook();
             return;
         }

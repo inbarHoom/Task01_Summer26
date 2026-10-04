@@ -7,7 +7,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] private Transform hands;
     private GameObject equippedWeaponObject;
     [SerializeField] private List <WeaponSO>  weapons = new List<WeaponSO>(3);
-    
+    public List<WeaponSO>  Weapons { get => weapons; private set => weapons = value; }
     public static event System.Action<Weapon_Behavior> OnEquipped;
 public Weapon_Behavior equipedWeapon { get; private set; }
 
