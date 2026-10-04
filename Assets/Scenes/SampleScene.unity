@@ -301,7 +301,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 275252981}
-  - component: {fileID: 275252982}
   m_Layer: 0
   m_Name: WeaponPreviewRoot
   m_TagString: Untagged
@@ -326,19 +325,6 @@ Transform:
   - {fileID: 1102376031}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &275252982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 275252980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9158ef574c279704a82fff4996fad86b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  previewPivot: {fileID: 1102376031}
 --- !u!1 &276480182
 GameObject:
   m_ObjectHideFlags: 0
@@ -2021,6 +2007,7 @@ GameObject:
   - component: {fileID: 820033202}
   - component: {fileID: 820033204}
   - component: {fileID: 820033203}
+  - component: {fileID: 820033205}
   m_Layer: 5
   m_Name: WeaponPreviewDisplay
   m_TagString: Untagged
@@ -2082,6 +2069,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 820033201}
   m_CullTransparentMesh: 1
+--- !u!114 &820033205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 820033201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9158ef574c279704a82fff4996fad86b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WeaponPreviewControls
+  previewPivot: {fileID: 1102376031}
+  holdDuration: 0.4
+  rotationSensitivity: 1
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2306,7 +2308,7 @@ RectTransform:
   m_GameObject: {fileID: 851091999}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5.5, y: 3.07, z: 1}
+  m_LocalScale: {x: 11, y: 5, z: 1.6286645}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 416813133}
@@ -2318,7 +2320,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 47}
+  m_AnchoredPosition: {x: 0, y: -2}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &851092001
@@ -3306,7 +3308,7 @@ Transform:
   m_GameObject: {fileID: 1357065637}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.428}
+  m_LocalPosition: {x: 0, y: 0, z: -0.53}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3389,7 +3391,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1
-  field of view: 8
+  field of view: 10
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
