@@ -49,6 +49,7 @@ public class HUD_Manager : MonoBehaviour
     [SerializeField] private Sprite m16UniqueAction;
     [SerializeField] private Sprite glockUniqueAction;
     [SerializeField] private Sprite revolverUniqueAction;
+    private int previewWeaponIndex = 0;
 
     void Start()
     {
@@ -229,9 +230,28 @@ public class HUD_Manager : MonoBehaviour
     public void ShowMobileInv()
     {
         mobileInventory.gameObject.SetActive(true);
-        weaponName.text = inventory.Weapons[0].WeaponName.ToString();
-        weaponsPrefabsInv[0].gameObject.SetActive(true);
-        
+        weaponName.text = inventory.Weapons[previewWeaponIndex].WeaponName.ToString();
+        weaponsPrefabsInv[previewWeaponIndex].SetActive(true);
+        Time.timeScale = 0;
+    }
+
+    public void SwitchPreview(int direction)
+    {
+        if(weaponsPrefabsInv.Count ==0) return;
+        weaponsPrefabsInv[previewWeaponIndex].SetActive(false);
+        previewWeaponIndex += direction;
+        if (previewWeaponIndex == weaponsPrefabsInv.Count) previewWeaponIndex = 0;
+        if(previewWeaponIndex < 0) previewWeaponIndex =  weaponsPrefabsInv.Count - 1;
+        ShowMobileInv();
+    }
+
+    public void ChoosePreviewWeapon()
+    {
+        inventory.EquipWeapon(previewWeaponIndex);
+        ammoCounter.SetActive(true);
+        weaponsPrefabsInv[previewWeaponIndex].SetActive(false);
+        mobileInventory.gameObject.SetActive(false);
+        Time.timeScale = 1;
     }
 
     private void setCurrentWeapon(Weapon_Behavior current)

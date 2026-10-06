@@ -6,7 +6,8 @@ public class Combat : MonoBehaviour
     [SerializeField] private Inventory inventory;
     private Weapon_Behavior currentWeapon;
   [SerializeField]  private int health = 100;
-    
+  private bool mobileFireHeld;
+  
     public static event Action OnPlayerTakeDamage;
     public static event Action OnDeath;
 
@@ -20,6 +21,17 @@ public class Combat : MonoBehaviour
         Enemy_Combat.OnHit -= PlayerTakeDamage;
     }
 
+    public void StartFireFromUI()
+    {
+        mobileFireHeld = true;
+    }
+
+    public void StopFireFromUI()
+    {
+        mobileFireHeld = false;
+        if(currentWeapon != null) currentWeapon.TryReleaseTrigger();
+    }
+
     void setWeapon()
     {
         currentWeapon = inventory.equipedWeapon;
@@ -29,6 +41,11 @@ public class Combat : MonoBehaviour
     {
         setWeapon();
         if(currentWeapon == null) return;
+        if (PlatformUI.UseMobileControls)
+        {
+            if(mobileFireHeld) currentWeapon.TryShoot();
+            return;
+        }
         if(Keyboard.current.rKey.wasPressedThisFrame)
             currentWeapon.TryReload();
         else if(Mouse.current.leftButton.isPressed)
