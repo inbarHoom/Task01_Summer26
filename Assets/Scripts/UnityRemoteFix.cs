@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-
+#if (UNITY_EDITOR)
 [InitializeOnLoad]
 public static class UnityRemoteInputFix
 {
@@ -53,3 +53,4 @@ public static class UnityRemoteInputFix
         remoteMessageHandler = null;
     }
 }
+#endif
