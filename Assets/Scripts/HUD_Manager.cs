@@ -43,6 +43,7 @@ public class HUD_Manager : MonoBehaviour
     [Header("Mobile")]
     [SerializeField] private Image mobileInventory;
 
+    [SerializeField] private Canvas pauseMenu;
     [SerializeField] private TextMeshProUGUI weaponName;
     [SerializeField] private List<GameObject> weaponsPrefabsInv = new List<GameObject>(3);
     [SerializeField] private Button uniqueActionButton;
@@ -64,7 +65,7 @@ public class HUD_Manager : MonoBehaviour
         {
             weapon.SetActive(false);
         }
-        
+        pauseMenu.enabled = false;
     }
 
     private void OnEnable()
@@ -287,5 +288,16 @@ public class HUD_Manager : MonoBehaviour
     void FinishGame()
     {
         finishText.enabled = true;
+    }
+
+   public void PauseGame()
+    {
+        pauseMenu.enabled = true;
+        Time.timeScale = 0;
+    }
+  public  void ResumeGame()
+    {
+        pauseMenu.enabled = false;
+        Time.timeScale = 1;
     }
 }
