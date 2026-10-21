@@ -13,23 +13,26 @@ public class SaveGameData
     public Vector3 playerPosition;
     public Quaternion playerRotation;
     public Vector3 playerScale;
+    public string equippedWeaponId;
 }
 
 public static class SaveSystem
 {
-    public static void Save(SaveGameData data)
+    public const int slotCount = 5;
+    public const int currentSaveVersion = 1;
+    public static void Save(SaveGameData data, int slotId)
     {
+        data.slotId = slotId;
+        data.saveVersion = currentSaveVersion;
         data.savedAtTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-        string path = Path.Combine(Application.persistentDataPath, $"save_slot_{data.slotId}.json");
+        string path = GetSavePath(slotId);
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(path, json);
-
         Debug.Log($"Saved to: {path}");
     }
-
     public static SaveGameData Load(int slotId)
     {
-        string path = Path.Combine(Application.persistentDataPath, $"save_slot_{slotId}.json");
+        string path = GetSavePath(slotId);
         if (!File.Exists(path))
         {
             Debug.Log($"No save file found at: {path}");
@@ -41,7 +44,15 @@ public static class SaveSystem
         Debug.Log($"Loaded slot {slotId} from: {path}");
         return data;
     }
-    
+
+    public static void Delete(int slotId)
+    {
+        string path = GetSavePath(slotId);
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+    }
     public static int SaveToNextSlot(SaveGameData data, int totalSlots)
     {
         int chosenSlot = -1;
@@ -68,7 +79,15 @@ public static class SaveSystem
             return -1;
         }
         data.slotId = chosenSlot;
-        Save(data);
+        Save(data , data.slotId);
         return chosenSlot;
+    }
+    private static string GetSavePath(int slotId)
+    {
+        return Path.Combine(Application.persistentDataPath, $"save_slot_{slotId}.json");
+    }
+    public static bool SaveExists(int slotId)
+    {
+        return File.Exists(GetSavePath(slotId));
     }
 }
