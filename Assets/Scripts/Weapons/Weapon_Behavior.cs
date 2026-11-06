@@ -97,4 +97,30 @@ public class Weapon_Behavior : MonoBehaviour
     }
 
     public WeaponSO WeaponData => weaponData;
+
+    public int LoadedAmmoIndex => weaponData.AmmoOptions.IndexOf(loadedAmmo);
+    public int SelectedAmmoIndex => weaponData.AmmoOptions.IndexOf(selectedAmmo);
+
+    public void RestoreAmmoState(int savedBullets, int loadedAmmoIndex, int selectedAmmoIndex)
+    {
+        loadedBullets = Mathf.Clamp(savedBullets, 0, weaponData.Capacity);
+        loadedAmmo = GetAmmoAtIndex(loadedAmmoIndex);
+        selectedAmmo = GetAmmoAtIndex(selectedAmmoIndex);
+        AfterAmmoStateRestored();
+        ShowBullets?.Invoke(loadedBullets);
+    }
+
+    private AmmoSO GetAmmoAtIndex(int index)
+    {
+        if (index < 0 || index >= weaponData.AmmoOptions.Count)
+        {
+            return weaponData.AmmoOptions[0];
+        }
+
+        return weaponData.AmmoOptions[index];
+    }
+
+    protected virtual void AfterAmmoStateRestored()
+    {
+    }
 }

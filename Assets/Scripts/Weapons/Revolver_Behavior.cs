@@ -30,5 +30,13 @@ public class Revolver_Behavior : Weapon_Behavior
         isHammerRacked = true;
         revolverAnim.Play("RackHammer");
     }
+
+    public bool IsHammerRacked => isHammerRacked;
+
+    public void RestoreHammerState(bool hammerRacked)
+    {
+        isHammerRacked = hammerRacked;
+        revolverAnim.Play(hammerRacked ? "RackHammer" : "ShootRev", 0, 1f);
+    }
     
 }

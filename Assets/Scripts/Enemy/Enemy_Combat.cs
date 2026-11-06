@@ -12,7 +12,7 @@ public class Enemy_Combat : MonoBehaviour
     [SerializeField] private float nextAttackTime = 0f;
     private bool hasReturned = false;
     public static event Action<int> OnHit;
-    public  event Action OnDeath;
+    public event Action<Enemy_Combat> OnDeath;
  
 
    public void Initialize(GameObject originalPrefab)
@@ -21,6 +21,7 @@ public class Enemy_Combat : MonoBehaviour
         health = enemyData.Health;
         nextAttackTime = 0f;
         hasReturned = false;
+        OnDeath = null;
         gameObject.GetComponent<MeshRenderer>().material.color = Color.green;
     }
 
@@ -28,7 +29,7 @@ public class Enemy_Combat : MonoBehaviour
     {
         if (hasReturned) return;
         hasReturned = true;
-        OnDeath?.Invoke();
+        OnDeath?.Invoke(this);
         Pool_Manager.Instance.ReturnObject(prefab, gameObject);
     }
    
@@ -49,6 +50,14 @@ public class Enemy_Combat : MonoBehaviour
         if(hasReturned) return;
         health -= damage;
         StartCoroutine(HurtEnemy());
+    }
+
+    public int CurrentHealth => health;
+    public GameObject SourcePrefab => prefab;
+
+    public void RestoreHealth(int savedHealth)
+    {
+        health = Mathf.Clamp(savedHealth, 1, enemyData.Health);
     }
     
     private void OnTriggerEnter(Collider other)

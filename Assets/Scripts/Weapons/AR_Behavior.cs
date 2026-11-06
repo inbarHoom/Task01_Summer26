@@ -46,6 +46,13 @@ public class AR_Behavior : Weapon_Behavior
 
    
     public e_FireMode FireMode => fireMode;
+
+    public void RestoreFireMode(int savedFireMode)
+    {
+        fireMode = System.Enum.IsDefined(typeof(e_FireMode), savedFireMode)
+            ? (e_FireMode)savedFireMode
+            : e_FireMode.SemiAutomatic;
+    }
     
 }
 

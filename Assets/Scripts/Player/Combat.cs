@@ -66,6 +66,13 @@ public class Combat : MonoBehaviour
         OnPlayerTakeDamage.Invoke();
     }
 
+    public int CurrentHealth => health;
+
+    public void RestoreHealth(int savedHealth)
+    {
+        health = Mathf.Max(1, savedHealth);
+    }
+
     public void ReloadFromUI()
     {
         if(currentWeapon == null) return;

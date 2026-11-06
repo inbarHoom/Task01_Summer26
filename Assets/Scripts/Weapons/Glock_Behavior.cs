@@ -7,6 +7,12 @@ public class Glock_Behavior : Weapon_Behavior
    int ammoIndex = 0;
     
 public string SelectedCaliberName { get => selectedCaliberName; }
+
+    protected override void AfterAmmoStateRestored()
+    {
+        ammoIndex = SelectedAmmoIndex;
+        selectedCaliberName = selectedAmmo.CaliberName;
+    }
     protected override bool canFire()
     {
         if(!base.canFire() || shotSingleShot) return false;

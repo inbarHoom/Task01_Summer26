@@ -1,83 +1,160 @@
-using System;
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class Wave_Manager : MonoBehaviour
 {
-    [SerializeField] private List<WaveData> waves =  new List<WaveData>();
-    private WaveData waveData;
-    private int currentWaveIndex = 0;
+    [SerializeField] private List<WaveData> waves = new();
     [SerializeField] private GameObject weakEnemy;
     [SerializeField] private GameObject strongEnemy;
-    private int aliveEnemies = 0;
-    [SerializeField] private List<Transform> spawnPoints = new List<Transform>() ;
+    [SerializeField] private List<Transform> spawnPoints = new();
     [SerializeField] private GameObject player;
-    
-    public static event Action<int> OnWaveUpdate;
-    public static event Action OnFinishGame;
-    
 
-    void Start()
-    {
-        waveData = waves[currentWaveIndex];
-        StartCoroutine(SpawnWave());
-    }
+    private readonly List<Enemy_Combat> activeEnemies = new();
+    private WaveData currentWave;
+    private int currentWaveIndex;
+    private int weakEnemiesStillToSpawn;
+    private int strongEnemiesStillToSpawn;
 
-    void HandleEnemyDeath()
-    {
-        aliveEnemies--;
-    }
-    
-    
+    public static event System.Action<int> OnWaveUpdate;
+    public static event System.Action OnFinishGame;
 
-    private IEnumerator SpawnWave()
+    public int CurrentWaveIndex => currentWaveIndex;
+    public int AliveEnemyCount => activeEnemies.Count;
+
+    private void Start()
     {
-        OnWaveUpdate.Invoke(currentWaveIndex);
-        for (int i = 0; i < waveData.WeakCount; i++)
+        if (waves.Count == 0)
         {
-            int pointIndex = Random.Range(0, spawnPoints.Count);
-            SpawnEnemy(weakEnemy , spawnPoints[pointIndex]);
-            yield return new WaitForSeconds(waveData.Interval);
-        }
-        for (int i = 0; i < waveData.StrongCount; i++)
-        {
-            int pointIndex = Random.Range(0, spawnPoints.Count);
-            SpawnEnemy(strongEnemy , spawnPoints[pointIndex]);
-            yield return new WaitForSeconds(waveData.Interval);
+            Debug.LogError("Wave Manager has no waves assigned.");
+            return;
         }
 
-        while (aliveEnemies>0)
+        if (SaveSession.HasPendingLoad)
         {
-            yield return null;
-        }
-        Debug.Log("wave complete");
-        if(currentWaveIndex + 1 < waves.Count)
-        {
-            currentWaveIndex++;
-            yield return new WaitForSeconds(waveData.Interval+1f);
-            waveData = waves[currentWaveIndex];
-            StartCoroutine(SpawnWave());
+            RestoreFromSave(SaveSession.PendingLoadData);
         }
         else
         {
-            Time.timeScale = 0;
-            Debug.Log("All Waves Are Complete");
-            OnFinishGame.Invoke();
+            StartWave(0);
         }
-       
+
+        StartCoroutine(RunCurrentWave());
     }
-    
-    public void SpawnEnemy(GameObject enemyPrefab , Transform spawnPoint)
+
+    private void StartWave(int waveIndex)
     {
-      GameObject enemyObject = Pool_Manager.Instance.Spawn(enemyPrefab , spawnPoint.position, spawnPoint.rotation);
-      enemyObject.GetComponent<Enemy_Movement>().SetTarget(player);
-      Enemy_Combat enemy = enemyObject.GetComponent<Enemy_Combat>();
-      enemy.Initialize(enemyPrefab);
-      enemy.OnDeath -= HandleEnemyDeath;
-      enemy.OnDeath += HandleEnemyDeath;
-      aliveEnemies++;
-      
+        currentWaveIndex = waveIndex;
+        currentWave = waves[currentWaveIndex];
+        weakEnemiesStillToSpawn = currentWave.WeakCount;
+        strongEnemiesStillToSpawn = currentWave.StrongCount;
+        OnWaveUpdate?.Invoke(currentWaveIndex);
+    }
+
+    private IEnumerator RunCurrentWave()
+    {
+        while (weakEnemiesStillToSpawn > 0)
+        {
+            SpawnEnemy(weakEnemy, GetRandomSpawnPoint());
+            weakEnemiesStillToSpawn--;
+            yield return new WaitForSeconds(currentWave.Interval);
+        }
+
+        while (strongEnemiesStillToSpawn > 0)
+        {
+            SpawnEnemy(strongEnemy, GetRandomSpawnPoint());
+            strongEnemiesStillToSpawn--;
+            yield return new WaitForSeconds(currentWave.Interval);
+        }
+
+        while (activeEnemies.Count > 0)
+        {
+            yield return null;
+        }
+
+        int nextWaveIndex = currentWaveIndex + 1;
+        if (nextWaveIndex >= waves.Count)
+        {
+            Time.timeScale = 0;
+            OnFinishGame?.Invoke();
+            yield break;
+        }
+
+        yield return new WaitForSeconds(currentWave.Interval + 1f);
+        StartWave(nextWaveIndex);
+        StartCoroutine(RunCurrentWave());
+    }
+
+    private void SpawnEnemy(GameObject enemyPrefab, Transform spawnPoint)
+    {
+        SpawnEnemy(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+    }
+
+    private Enemy_Combat SpawnEnemy(GameObject enemyPrefab, Vector3 position, Quaternion rotation)
+    {
+        GameObject spawnedObject = Pool_Manager.Instance.Spawn(enemyPrefab, position, rotation);
+        spawnedObject.GetComponent<Enemy_Movement>().SetTarget(player);
+
+        Enemy_Combat enemyCombat = spawnedObject.GetComponent<Enemy_Combat>();
+        enemyCombat.Initialize(enemyPrefab);
+        enemyCombat.OnDeath += HandleEnemyDeath;
+        activeEnemies.Add(enemyCombat);
+        return enemyCombat;
+    }
+
+    private Transform GetRandomSpawnPoint()
+    {
+        return spawnPoints[Random.Range(0, spawnPoints.Count)];
+    }
+
+    private void HandleEnemyDeath(Enemy_Combat enemy)
+    {
+        activeEnemies.Remove(enemy);
+    }
+
+    public void WriteSaveData(SaveGameData data)
+    {
+        data.waveIndex = currentWaveIndex;
+        data.weakEnemiesStillToSpawn = weakEnemiesStillToSpawn;
+        data.strongEnemiesStillToSpawn = strongEnemiesStillToSpawn;
+        data.aliveEnemies.Clear();
+
+        foreach (Enemy_Combat enemy in activeEnemies)
+        {
+            if (enemy == null || !enemy.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            data.aliveEnemies.Add(new EnemySaveData
+            {
+                enemyKind = enemy.SourcePrefab == strongEnemy ? EnemyKind.Strong : EnemyKind.Weak,
+                position = enemy.transform.position,
+                rotation = enemy.transform.rotation,
+                health = enemy.CurrentHealth
+            });
+        }
+    }
+
+    private void RestoreFromSave(SaveGameData data)
+    {
+        currentWaveIndex = Mathf.Clamp(data.waveIndex, 0, waves.Count - 1);
+        currentWave = waves[currentWaveIndex];
+        weakEnemiesStillToSpawn = Mathf.Max(0, data.weakEnemiesStillToSpawn);
+        strongEnemiesStillToSpawn = Mathf.Max(0, data.strongEnemiesStillToSpawn);
+        OnWaveUpdate?.Invoke(currentWaveIndex);
+
+        if (data.aliveEnemies == null)
+        {
+            return;
+        }
+
+        foreach (EnemySaveData savedEnemy in data.aliveEnemies)
+        {
+            GameObject enemyPrefab = savedEnemy.enemyKind == EnemyKind.Strong ? strongEnemy : weakEnemy;
+            Enemy_Combat enemy = SpawnEnemy(enemyPrefab, savedEnemy.position, savedEnemy.rotation);
+            enemy.RestoreHealth(savedEnemy.health);
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 [Serializable]
@@ -12,8 +13,36 @@ public class SaveGameData
     public int playerHealth;
     public Vector3 playerPosition;
     public Quaternion playerRotation;
-    public Vector3 playerScale;
-    public string equippedWeaponId;
+    public WeaponSaveData weapon = new WeaponSaveData();
+    public int weakEnemiesStillToSpawn;
+    public int strongEnemiesStillToSpawn;
+    public List<EnemySaveData> aliveEnemies = new List<EnemySaveData>();
+}
+
+[Serializable]
+public class WeaponSaveData
+{
+    public int equippedWeaponIndex = -1;
+    public int loadedBullets;
+    public int loadedAmmoIndex;
+    public int selectedAmmoIndex;
+    public int m16FireMode;
+    public bool revolverHammerRacked;
+}
+
+public enum EnemyKind
+{
+    Weak,
+    Strong
+}
+
+[Serializable]
+public class EnemySaveData
+{
+    public EnemyKind enemyKind;
+    public Vector3 position;
+    public Quaternion rotation;
+    public int health;
 }
 
 public static class SaveSystem
@@ -35,7 +64,6 @@ public static class SaveSystem
         string path = GetSavePath(slotId);
         if (!File.Exists(path))
         {
-            Debug.Log($"No save file found at: {path}");
             return null;
         }
         string json = File.ReadAllText(path);
@@ -52,39 +80,34 @@ public static class SaveSystem
         {
             File.Delete(path);
         }
-    }
-    public static int SaveToNextSlot(SaveGameData data, int totalSlots)
-    {
-        int chosenSlot = -1;
-        DateTime oldestSaveTime = DateTime.MaxValue;
-        for (int slot = 1; slot <= totalSlots; slot++)
-        {
-            SaveGameData existingSave = Load(slot);
 
-            if (existingSave == null)
-            {
-                chosenSlot = slot;
-                break;
-            }
-            if (DateTime.TryParse(existingSave.savedAtTime, out DateTime saveTime)
-                && saveTime < oldestSaveTime)
-            {
-                oldestSaveTime = saveTime;
-                chosenSlot = slot;
-            }
-        }
-        if (chosenSlot == -1)
+        string thumbnailPath = GetThumbnailPath(slotId);
+        if (File.Exists(thumbnailPath))
         {
-            Debug.LogError("Could not choose a save slot.");
-            return -1;
+            File.Delete(thumbnailPath);
         }
-        data.slotId = chosenSlot;
-        Save(data , data.slotId);
-        return chosenSlot;
+    }
+
+    public static void DeleteAll()
+    {
+        for (int slotId = 1; slotId <= slotCount; slotId++)
+        {
+            Delete(slotId);
+        }
     }
     private static string GetSavePath(int slotId)
     {
         return Path.Combine(Application.persistentDataPath, $"save_slot_{slotId}.json");
+    }
+
+    public static string GetThumbnailPath(int slotId)
+    {
+        return Path.Combine(Application.persistentDataPath, $"save_slot_{slotId}.png");
+    }
+
+    public static void SaveThumbnail(int slotId, Texture2D screenshot)
+    {
+        File.WriteAllBytes(GetThumbnailPath(slotId), screenshot.EncodeToPNG());
     }
     public static bool SaveExists(int slotId)
     {

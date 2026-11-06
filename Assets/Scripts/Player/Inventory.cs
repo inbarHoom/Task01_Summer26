@@ -10,9 +10,15 @@ public class Inventory : MonoBehaviour
     public List<WeaponSO>  Weapons { get => weapons; private set => weapons = value; }
     public static event System.Action<Weapon_Behavior> OnEquipped;
 public Weapon_Behavior equipedWeapon { get; private set; }
+public int EquippedWeaponIndex { get; private set; } = -1;
 
    public void EquipWeapon(int hoveredSlotIndex)
     {
+        if (hoveredSlotIndex < 0 || hoveredSlotIndex >= weapons.Count)
+        {
+            return;
+        }
+
         WeaponSO selectedWeapon = weapons[hoveredSlotIndex];
         if (equipedWeapon != null &&
             equipedWeapon.WeaponData == selectedWeapon)
@@ -29,6 +35,7 @@ public Weapon_Behavior equipedWeapon { get; private set; }
         equippedWeaponObject = Instantiate(selectedWeapon.WeaponPrefab, hands);
         equippedWeaponObject.transform.localPosition = Vector3.zero;
          equipedWeapon = equippedWeaponObject.GetComponent<Weapon_Behavior>();
+         EquippedWeaponIndex = hoveredSlotIndex;
          OnEquipped.Invoke(equipedWeapon);
     }
 }

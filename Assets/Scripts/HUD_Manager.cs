@@ -258,6 +258,7 @@ public class HUD_Manager : MonoBehaviour
     private void setCurrentWeapon(Weapon_Behavior current)
     {
         currentWeapon = current.WeaponData;
+        ammoCounter.SetActive(true);
         ShowAmmoCounter(current.LoadedBullets);
     }
 
